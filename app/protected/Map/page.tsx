@@ -130,7 +130,8 @@ export default function ProtectedPage() {
           <li key={index} className="mb-2">
             <strong>{feature.properties.nazev_spolecnosti}</strong>
             {' - '}
-            <span>IČO: {feature.properties.ico}</span>
+            <span>IČO: {feature.properties.ico}</span> <br />
+            <span>Hodnota investice: {feature.properties.investice_mil__CZK} mil. Kč</span>
           </li>
         ))}
       </ul>
