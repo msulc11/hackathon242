@@ -8,14 +8,14 @@ export default function Page() {
     <div className="homepage-container bg-gray-100 dark:bg-[#0b0a0b] min-h-screen">
       {/* Hero Section */}
       <header
-        className="hero-section bg-cover bg-center h-80 flex items-center justify-center text-white"
+        className="hero-section bg-cover bg-center h-80 flex items-center justify-center text-white rounded-lg"
         style={{ backgroundImage: 'url("/images/financial.webp")' }}
       >
         <div className="text-center p-5 bg-[#0b0a0b] bg-opacity-60 dark:bg-[#0b0a0b] dark:bg-opacity-80 rounded-lg">
           <h1 className="text-5xl font-bold mb-4">Welcome to Financial Companies Hub</h1>
           <p className="text-xl mb-6">Your source for financial insights, company data, and investment tracking</p>
           <Link
-            href="/explore"
+            href="/sign-in"
             className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-full"
           >
             Explore Companies
@@ -40,15 +40,30 @@ export default function Page() {
       </section>
 
       {/* Call-to-action Section */}
-      <section className="cta-section py-16 bg-gray-100 dark:bg-[#0b0a0b] text-center">
-        <h2 className="text-3xl font-semibold mb-6 dark:text-white">Start Exploring Now!</h2>
-        <Link
-          href="/explore"
-          className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-8 rounded-full"
-        >
-          Discover Companies
-        </Link>
-      </section>
+      <section
+  className="cta-section relative py-16 bg-gray-100 dark:bg-[#0b0a0b] text-center rounded-xl"
+  style={{ 
+    backgroundImage: 'url("/images/financial.webp")',
+    backgroundSize: 'cover', // Ensures the image covers the section
+    backgroundPosition: 'center', // Centers the image
+    backgroundRepeat: 'no-repeat', // Prevents the image from repeating
+    }}
+>
+  {/* Background Overlay */}
+  <div className="absolute inset-0 bg-black opacity-50 rounded-xl"></div>
+
+  {/* Section Content */}
+  <div className="relative z-10">
+    <h2 className="text-3xl font-semibold mb-6 dark:text-white">Start Exploring Now!</h2>
+    <Link
+      href="/sign-in"
+      className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-8 rounded-full"
+    >
+      Discover Companies
+    </Link>
+  </div>
+</section>
+
 
       {/* Footer */}
       <footer className="footer bg-gray-800 dark:bg-[#0b0a0b] text-white py-6 text-center">
