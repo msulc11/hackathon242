@@ -50,25 +50,39 @@ export default async function ProtectedPage() {
 
   const geojson = await fetchGeoJSON();
 
+  // Filter out duplicate companies based on IČO
+  const uniqueCompanies = geojson.features.reduce((acc, current) => {
+    const x = acc.find(item => item.properties.ico === current.properties.ico);
+    if (!x) {
+      return acc.concat([current]);
+    } else {
+      return acc;
+    }
+  }, []);
+
+  // Create a new GeoJSON object with unique companies
+  const uniqueGeojson = {
+    ...geojson,
+    features: uniqueCompanies
+  };
+
+  let duplicateCount = geojson.features.length - uniqueCompanies.length;
+  console.log(`Removed ${duplicateCount} duplicate entries`);
+
   return (
     <div>
       <h1>Companies Map</h1>
-      <SearchBar geojsonData={geojson} />
+      <SearchBar geojsonData={uniqueGeojson} />
       <div style={{ height: '500px', width: '100%', minWidth: '1000px' }}>
-        <Map geojsonData={geojson} />
+        <Map geojsonData={uniqueGeojson} />
       </div>
-      <h2>Companies List</h2>
+      <h2 className='text-2xl font-bold pt-3'>Companies List:</h2>
       <ul>
-        {geojson.features.map((feature, index) => (
-          <li key={index}>
-            <strong>{feature.properties.nazev_spolecnosti}</strong><br />
-            Ulice: {feature.properties.nazev_ulice} {feature.properties.cislo_domovni}<br />
-            Město: {feature.properties.nazev_obce}, PSČ: {feature.properties.psc}<br />
-            Země původu: {feature.properties.země_puvodu_zadatele}<br />
-            IČO: {feature.properties.ico}<br />
-            <a href={feature.properties.www} target="_blank" rel="noopener noreferrer">
-              Web
-            </a>
+        {uniqueCompanies.map((feature, index) => (
+          <li key={index} className="mb-2">
+            <strong>{feature.properties.nazev_spolecnosti}</strong>
+            {' - '}
+            <span>IČO: {feature.properties.ico}</span>
           </li>
         ))}
       </ul>

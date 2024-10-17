@@ -31,9 +31,11 @@ const SearchBar: React.FC<SearchBarProps> = ({ geojsonData }) => {
         type="text"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
-        placeholder="Search by company name or ICO"
+        placeholder="Zadej jméno nebo Ičo společnosti"
+        className="w-full"
+        style={{ backgroundColor: 'black', color: 'white' }}
       />
-      <button onClick={handleSearch}>Search</button>
+      <button onClick={handleSearch} className="bg-blue-500 text-white mb-5 rounded-md p-2">Hledat</button>
     </div>
   );
 };
