@@ -7,8 +7,6 @@ import { ThemeProvider } from "next-themes";
 import Link from "next/link";
 import "./globals.css";
 import 'leaflet/dist/leaflet.css';
-import 'leaflet.markercluster/dist/MarkerCluster.css';
-import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -39,9 +37,19 @@ export default function RootLayout({
               <nav className="w-full flex justify-center border-b border-b-foreground/10 h-16">
                 <div className="w-full max-w-5xl flex justify-between items-center p-3 px-5 text-sm">
                   <div className="flex gap-5 items-center font-semibold">
-                    <Link href={"/"}>Krajinou Královehradecka</Link>
+                    <Link href={"/"}>Krajinou KrÃ¡lovehradecka</Link>
+
+                    <Link href={"/"}>
+                    <img
+                      src="/images/cis-logo.png"
+                      alt="Header Image"
+                      className="h-12" // Adjust the height as needed
+                    />
+                    </Link>
+
                     <div className="flex items-center gap-2">
-                      
+                      {/* Optional: Add Theme Switcher */}
+                      <ThemeSwitcher />
                     </div>
                   </div>
                   {!hasEnvVars ? <EnvVarWarning /> : <HeaderAuth />}
@@ -61,4 +69,3 @@ export default function RootLayout({
     </html>
   );
 }
-
