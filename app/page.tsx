@@ -43,7 +43,7 @@ export default function Page() {
       <section
   className="cta-section relative py-16 bg-gray-100 dark:bg-[#0b0a0b] text-center rounded-xl"
   style={{ 
-    backgroundImage: 'url("/images/financial.webp")',
+    backgroundImage: 'url("/images/banner.png")',
     backgroundSize: 'cover', // Ensures the image covers the section
     backgroundPosition: 'center', // Centers the image
     backgroundRepeat: 'no-repeat', // Prevents the image from repeating
