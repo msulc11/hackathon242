@@ -23,13 +23,8 @@ interface GeoJSON {
 }
 
 const fetchGeoJSON = async (): Promise<GeoJSON> => {
-  // Define the path to the GeoJSON file
   const filePath = path.join(process.cwd(), 'json', 'investice.geojson');
-
-  // Read the GeoJSON file
   const geojsonData = fs.readFileSync(filePath, 'utf-8');
-
-  // Parse the GeoJSON data
   return JSON.parse(geojsonData);
 };
 
