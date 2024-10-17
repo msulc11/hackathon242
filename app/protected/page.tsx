@@ -54,6 +54,16 @@ export default function Page() {
         </div>
       </section>
 
+      <section className="info-section py-16 bg-white dark:bg-[#0b0a0b]">
+        <div className="max-w-5xl mx-auto px-5">
+          <h2 className="text-3xl font-semibold text-center mb-8 dark:text-white">Zákon</h2>
+          <p className="text-gray-700 dark:text-gray-300 text-lg leading-relaxed mb-8">
+          Podle jakého zákona se investiční pobídky řídí?
+          Investiční pobídky se řídí zákonem č. 72/2000 Sb., o investičních pobídkách, ve znění zákona č. 426/2023 Sb.
+          </p>
+        </div>
+      </section>
+
 
       {/* Call-to-action Section */}
       <section
