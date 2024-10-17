@@ -5,13 +5,13 @@ import Link from 'next/link';
 
 export default function Page() {
   return (
-    <div className="homepage-container bg-gray-100 dark:bg-black min-h-screen">
+    <div className="homepage-container bg-gray-100 dark:bg-[#0b0a0b] min-h-screen">
       {/* Hero Section */}
       <header
         className="hero-section bg-cover bg-center h-80 flex items-center justify-center text-white"
         style={{ backgroundImage: 'url("/images/financial.webp")' }}
       >
-        <div className="text-center p-5 bg-black bg-opacity-60 dark:bg-black dark:bg-opacity-80 rounded-lg">
+        <div className="text-center p-5 bg-[#0b0a0b] bg-opacity-60 dark:bg-[#0b0a0b] dark:bg-opacity-80 rounded-lg">
           <h1 className="text-5xl font-bold mb-4">Welcome to Financial Companies Hub</h1>
           <p className="text-xl mb-6">Your source for financial insights, company data, and investment tracking</p>
           <Link
@@ -24,7 +24,7 @@ export default function Page() {
       </header>
 
       {/* Information Section */}
-      <section className="info-section py-16 bg-white dark:bg-black">
+      <section className="info-section py-16 bg-white dark:bg-[#0b0a0b]">
         <div className="max-w-5xl mx-auto px-5">
           <h2 className="text-3xl font-semibold text-center mb-8 dark:text-white">About Our Platform</h2>
           <p className="text-gray-700 dark:text-gray-300 text-lg leading-relaxed mb-8">
@@ -40,7 +40,7 @@ export default function Page() {
       </section>
 
       {/* Call-to-action Section */}
-      <section className="cta-section py-16 bg-gray-100 dark:bg-black text-center">
+      <section className="cta-section py-16 bg-gray-100 dark:bg-[#0b0a0b] text-center">
         <h2 className="text-3xl font-semibold mb-6 dark:text-white">Start Exploring Now!</h2>
         <Link
           href="/explore"
@@ -51,7 +51,7 @@ export default function Page() {
       </section>
 
       {/* Footer */}
-      <footer className="footer bg-gray-800 dark:bg-black text-white py-6 text-center">
+      <footer className="footer bg-gray-800 dark:bg-[#0b0a0b] text-white py-6 text-center">
         <p>&copy; 2024 Financial Companies Hub. All Rights Reserved.</p>
       </footer>
     </div>
