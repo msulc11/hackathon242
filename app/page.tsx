@@ -80,12 +80,12 @@ export default function Page() {
 
   {/* Section Content */}
   <div className="relative z-10">
-    <h2 className="text-3xl font-semibold mb-6 dark:text-white">Start Exploring Now!</h2>
+    <h2 className="text-3xl font-semibold mb-6 dark:text-white">Objevte všech 84 záznamů!</h2>
     <Link
       href="/protected/Map"
       className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-8 rounded-full"
     >
-      Discover Companies
+      Obejvte společnosti
     </Link>
   </div>
 </section>
@@ -93,7 +93,7 @@ export default function Page() {
 
       {/* Footer */}
       <footer className="footer bg-gray-800 dark:bg-[#0b0a0b] text-white py-6 text-center">
-        <p>&copy; 2024 Financial Companies Hub. All Rights Reserved.</p>
+        <p>&copy; 2024 Hackathon - Tři hírous. Všechna práva vyhrazena.</p>
       </footer>
     </div>
   );
