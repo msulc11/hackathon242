@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import FetchDataSteps from "@/components/tutorial/fetch-data-steps";
 import { createClient } from "@/utils/supabase/server";
 import { InfoIcon } from "lucide-react";
@@ -5,6 +6,7 @@ import { redirect } from "next/navigation";
 import fs from 'fs';
 import path from 'path';
 import dynamic from 'next/dynamic';
+import SearchBar from '@/components/SearchBar';
 
 interface GeoJSONFeature {
   type: string;
@@ -30,24 +32,29 @@ const fetchGeoJSON = async (): Promise<GeoJSON> => {
 };
 
 // Dynamically import the Map component with no SSR
-const Map = dynamic(() => import('@/components/Map'), { ssr: false });
+const Map = dynamic(() => import('@/components/Map'), { 
+  ssr: false,
+  loading: () => <p>Loading map...</p>
+});
 
 export default async function ProtectedPage() {
   const supabase = createClient();
 
-  const geojson = await fetchGeoJSON();
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return redirect("/sign-in");
+    return redirect("/login");
   }
+
+  const geojson = await fetchGeoJSON();
 
   return (
     <div>
       <h1>Companies Map</h1>
-      <div style={{ height: '500px', width: '100%', minWidth: '1000px ' }}>
+      <SearchBar geojsonData={geojson} />
+      <div style={{ height: '500px', width: '100%', minWidth: '1000px' }}>
         <Map geojsonData={geojson} />
       </div>
       <h2>Companies List</h2>
