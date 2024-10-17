@@ -4,6 +4,7 @@ import { InfoIcon } from "lucide-react";
 import { redirect } from "next/navigation";
 import fs from 'fs';
 import path from 'path';
+import dynamic from 'next/dynamic';
 
 interface GeoJSONFeature {
   type: string;
@@ -28,12 +29,13 @@ const fetchGeoJSON = async (): Promise<GeoJSON> => {
   return JSON.parse(geojsonData);
 };
 
- 
+// Dynamically import the Map component with no SSR
+const Map = dynamic(() => import('@/components/Map'), { ssr: false });
+
 export default async function ProtectedPage() {
   const supabase = createClient();
 
   const geojson = await fetchGeoJSON();
-  const features = geojson.features;
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -44,10 +46,14 @@ export default async function ProtectedPage() {
 
   return (
     <div>
-      <h1>Companies List</h1>
+      <h1>Companies Map</h1>
+      <div style={{ height: '500px', width: '100%' }}>
+        <Map geojsonData={geojson} />
+      </div>
+      <h2>Companies List</h2>
       <ul>
-        {geojson.features.map((feature) => (
-          <li key={feature.id}>
+        {geojson.features.map((feature, index) => (
+          <li key={index}>
             <strong>{feature.properties.nazev_spolecnosti}</strong><br />
             Ulice: {feature.properties.nazev_ulice} {feature.properties.cislo_domovni}<br />
             Město: {feature.properties.nazev_obce}, PSČ: {feature.properties.psc}<br />
