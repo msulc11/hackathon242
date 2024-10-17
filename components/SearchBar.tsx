@@ -28,14 +28,14 @@ const SearchBar: React.FC<SearchBarProps> = ({ geojsonData }) => {
   return (
     <div>
       <input
-        type="text"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        placeholder="Zadej jméno nebo Ičo společnosti"
-        className="w-full"
-        style={{ backgroundColor: 'black', color: 'white' }}
-      />
-      <button onClick={handleSearch} className="bg-blue-500 text-white mb-5 rounded-md p-2">Hledat</button>
+  type="text"
+  value={searchTerm}
+  onChange={(e) => setSearchTerm(e.target.value)}
+  placeholder="Zadej jméno nebo Ičo společnosti"
+  className="w-full p-3 rounded-lg border border-gray-600 bg-[#0b0a0b] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-lg transition duration-300 ease-in-out"
+/>
+
+      <button onClick={handleSearch} className="bg-blue-500 text-white my-5 rounded-md p-2">Hledat</button>
     </div>
   );
 };
