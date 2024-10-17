@@ -34,7 +34,7 @@ export default function Login({ searchParams }: { searchParams: Message }) {
           required
         />
         <SubmitButton pendingText="Přihlašuji se..." formAction={signInAction}>
-          Sign in
+          Přihlásit se
         </SubmitButton>
         <FormMessage message={searchParams} />
       </div>
