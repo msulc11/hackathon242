@@ -45,7 +45,18 @@ export default function ProtectedPage() {
     const fetchGeoJSON = async () => {
       const response = await fetch('/api/companies');
       const data = await response.json();
-      setGeojson({ type: "FeatureCollection", features: data });
+      
+      // Deduplicate the features based on ICO
+      const uniqueFeatures = data.reduce((acc, current) => {
+        const x = acc.find(item => item.properties.ico === current.properties.ico);
+        if (!x) {
+          return acc.concat([current]);
+        } else {
+          return acc;
+        }
+      }, []);
+
+      setGeojson({ type: "FeatureCollection", features: uniqueFeatures });
     };
     fetchGeoJSON();
   }, []);
