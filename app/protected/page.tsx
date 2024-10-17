@@ -47,7 +47,7 @@ export default async function ProtectedPage() {
   return (
     <div>
       <h1>Companies Map</h1>
-      <div style={{ height: '500px', width: '100%' }}>
+      <div style={{ height: '500px', width: '100%', minWidth: '1000px ' }}>
         <Map geojsonData={geojson} />
       </div>
       <h2>Companies List</h2>
