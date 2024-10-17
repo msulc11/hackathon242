@@ -19,7 +19,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ geojsonData }) => {
 
     if (feature) {
       const coordinates = feature.geometry.coordinates;
-      router.push(`/protected?lat=${coordinates[1]}&lon=${coordinates[0]}&zoom=15`);
+      router.push(`/protected/Map?lat=${coordinates[1]}&lon=${coordinates[0]}&zoom=15`);
     } else {
       alert('Company not found');
     }
