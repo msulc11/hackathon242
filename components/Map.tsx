@@ -3,6 +3,9 @@
 import { useEffect, useRef } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import 'leaflet.markercluster/dist/MarkerCluster.css';
+import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
+import 'leaflet.markercluster';
 import { useSearchParams } from 'next/navigation';
 
 interface MapProps {
@@ -11,7 +14,7 @@ interface MapProps {
 
 const Map: React.FC<MapProps> = ({ geojsonData }) => {
   const mapRef = useRef<L.Map | null>(null);
-  const geojsonLayerRef = useRef<L.GeoJSON | null>(null);
+  const markerClusterGroupRef = useRef<L.MarkerClusterGroup | null>(null);
   const searchParams = useSearchParams();
 
   useEffect(() => {
@@ -34,7 +37,11 @@ const Map: React.FC<MapProps> = ({ geojsonData }) => {
           popupAnchor: [0, -24],
         });
 
-        geojsonLayerRef.current = L.geoJSON(geojsonData, {
+        // Create a new MarkerClusterGroup
+        markerClusterGroupRef.current = L.markerClusterGroup();
+
+        // Add markers to the cluster group instead of directly to the map
+        L.geoJSON(geojsonData, {
           pointToLayer: (feature, latlng) => {
             return L.marker(latlng, { icon: customIcon });
           },
@@ -49,7 +56,10 @@ const Map: React.FC<MapProps> = ({ geojsonData }) => {
             `;
             layer.bindPopup(popupContent);
           }
-        }).addTo(map);
+        }).addTo(markerClusterGroupRef.current);
+
+        // Add the marker cluster group to the map
+        map.addLayer(markerClusterGroupRef.current);
       }
 
       const lat = searchParams.get('lat');
