@@ -71,12 +71,12 @@ export default async function ProtectedPage() {
 
   return (
     <div>
-      <h1>Companies Map</h1>
+      
       <SearchBar geojsonData={uniqueGeojson} />
       <div style={{ height: '500px', width: '100%', minWidth: '1000px' }}>
         <Map geojsonData={uniqueGeojson} />
       </div>
-      <h2 className='text-2xl font-bold pt-3'>Companies List:</h2>
+      <h2 className='text-2xl font-bold pt-3'>Společnosti:</h2>
       <ul>
         {uniqueCompanies.map((feature, index) => (
           <li key={index} className="mb-2">
