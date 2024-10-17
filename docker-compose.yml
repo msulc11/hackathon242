@@ -1,0 +1,9 @@
+services:
+  node:
+    image: node:20.2
+    volumes:
+      - ./:/assets
+    working_dir: /assets
+    ports:
+      - 3000:3000
+    command: npm run dev
