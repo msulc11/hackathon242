@@ -1,10 +1,10 @@
-import { useState } from 'react';
+'use client';
+
+import { useState, useCallback, useEffect } from 'react';
 import FetchDataSteps from "@/components/tutorial/fetch-data-steps";
-import { createClient } from "@/utils/supabase/server";
+import { createClient } from "@/utils/supabase/client";
 import { InfoIcon } from "lucide-react";
 import { redirect } from "next/navigation";
-import fs from 'fs';
-import path from 'path';
 import dynamic from 'next/dynamic';
 import SearchBar from '@/components/SearchBar';
 import Link from 'next/link';
@@ -26,64 +26,57 @@ interface GeoJSON {
   features: GeoJSONFeature[];
 }
 
-const fetchGeoJSON = async (): Promise<GeoJSON> => {
-  const filePath = path.join(process.cwd(), 'json', 'investice.geojson');
-  const geojsonData = fs.readFileSync(filePath, 'utf-8');
-  return JSON.parse(geojsonData);
-};
-
-// Dynamically import the Map component with no SSR
 const Map = dynamic(() => import('@/components/Map'), { 
   ssr: false,
   loading: () => <p>Loading map...</p>
 });
 
-export default async function ProtectedPage() {
-  const supabase = createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    return redirect("/login");
-  }
-
-  const geojson = await fetchGeoJSON();
-
-  // Filter out duplicate companies based on IČO
-  const uniqueCompanies = geojson.features.reduce((acc, current) => {
-    const x = acc.find(item => item.properties.ico === current.properties.ico);
-    if (!x) {
-      return acc.concat([current]);
-    } else {
-      return acc;
+export default function ProtectedPage() {
+  const [geojson, setGeojson] = useState(null);
+  const [favorites, setFavorites] = useState<any[]>(() => {
+    if (typeof window !== 'undefined') {
+      const storedFavorites = localStorage.getItem('favorites');
+      return storedFavorites ? JSON.parse(storedFavorites) : [];
     }
+    return [];
+  });
+
+  useEffect(() => {
+    const fetchGeoJSON = async () => {
+      const response = await fetch('/api/companies');
+      const data = await response.json();
+      setGeojson({ type: "FeatureCollection", features: data });
+    };
+    fetchGeoJSON();
   }, []);
 
-  // Create a new GeoJSON object with unique companies
-  const uniqueGeojson = {
-    ...geojson,
-    features: uniqueCompanies
-  };
+  const handleAddFavorite = useCallback((company: any) => {
+    setFavorites(prevFavorites => {
+      const newFavorites = [...prevFavorites, company];
+      localStorage.setItem('favorites', JSON.stringify(newFavorites));
+      return newFavorites;
+    });
+    alert('Company added to favorites!');
+  }, []);
 
-  let duplicateCount = geojson.features.length - uniqueCompanies.length;
-  console.log(`Removed ${duplicateCount} duplicate entries`);
+  if (!geojson) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
-        <SearchBar geojsonData={uniqueGeojson} />
+        <SearchBar geojsonData={geojson} />
         <Link href="/protected/favorites" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-          View Favorites
+          View Favorites ({favorites.length})
         </Link>
       </div>
       <div style={{ height: '500px', width: '100%', minWidth: '1000px' }}>
-        <Map geojsonData={uniqueGeojson} />
+        <Map geojsonData={geojson} onAddFavorite={handleAddFavorite} />
       </div>
       <h2 className='text-2xl font-bold pt-3'>Společnosti:</h2>
       <ul>
-        {uniqueCompanies.map((feature, index) => (
+        {geojson.features.map((feature, index) => (
           <li key={index} className="mb-2">
             <strong>{feature.properties.nazev_spolecnosti}</strong>
             {' - '}

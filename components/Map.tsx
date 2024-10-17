@@ -10,9 +10,10 @@ import { useSearchParams } from 'next/navigation';
 
 interface MapProps {
   geojsonData: any; // Replace 'any' with your actual GeoJSON type
+  onAddFavorite: (company: any) => void;
 }
 
-const Map: React.FC<MapProps> = ({ geojsonData }) => {
+const Map: React.FC<MapProps> = ({ geojsonData, onAddFavorite }) => {
   const mapRef = useRef<L.Map | null>(null);
   const markerClusterGroupRef = useRef<L.MarkerClusterGroup | null>(null);
   const searchParams = useSearchParams();
@@ -69,7 +70,10 @@ const Map: React.FC<MapProps> = ({ geojsonData }) => {
             addToFavoritesBtn.addEventListener('click', function(event) {
               const ico = (event.target as HTMLElement).getAttribute('data-ico');
               if (ico) {
-                addToFavorites(ico);
+                const company = geojsonData.features.find((f: any) => f.properties.ico === ico);
+                if (company) {
+                  onAddFavorite(company);
+                }
               }
             });
           }
@@ -91,18 +95,7 @@ const Map: React.FC<MapProps> = ({ geojsonData }) => {
         mapRef.current = null;
       }
     };
-  }, [geojsonData, searchParams]);
-
-  const addToFavorites = (ico: string) => {
-    const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
-    if (!favorites.includes(ico)) {
-      favorites.push(ico);
-      localStorage.setItem('favorites', JSON.stringify(favorites));
-      alert('Company added to favorites!');
-    } else {
-      alert('This company is already in your favorites.');
-    }
-  };
+  }, [geojsonData, searchParams, onAddFavorite]);
 
   return <div id="map" style={{ height: '100%', width: '100%' }} />;
 };
