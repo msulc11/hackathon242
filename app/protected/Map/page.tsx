@@ -7,6 +7,7 @@ import fs from 'fs';
 import path from 'path';
 import dynamic from 'next/dynamic';
 import SearchBar from '@/components/SearchBar';
+import Link from 'next/link';
 
 interface GeoJSONFeature {
   type: string;
@@ -71,8 +72,12 @@ export default async function ProtectedPage() {
 
   return (
     <div>
-      
-      <SearchBar geojsonData={uniqueGeojson} />
+      <div className="flex justify-between items-center mb-4">
+        <SearchBar geojsonData={uniqueGeojson} />
+        <Link href="/protected/favorites" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+          View Favorites
+        </Link>
+      </div>
       <div style={{ height: '500px', width: '100%', minWidth: '1000px' }}>
         <Map geojsonData={uniqueGeojson} />
       </div>

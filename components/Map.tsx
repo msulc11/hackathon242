@@ -1,6 +1,6 @@
 'use client';  // Add this line at the top of the file
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet.markercluster/dist/MarkerCluster.css';
@@ -52,7 +52,8 @@ const Map: React.FC<MapProps> = ({ geojsonData }) => {
               Město: ${feature.properties.nazev_obce}, PSČ: ${feature.properties.psc}<br>
               Země původu: ${feature.properties.země_puvodu_zadatele}<br>
               IČO: ${feature.properties.ico}<br>
-              <a href="${feature.properties.www}" target="_blank" rel="noopener noreferrer">Web</a>
+              <a href="${feature.properties.www}" target="_blank" rel="noopener noreferrer">Web</a><br>
+              <button class="add-to-favorites" data-ico="${feature.properties.ico}">Add to Favorites</button>
             `;
             layer.bindPopup(popupContent);
           }
@@ -60,6 +61,19 @@ const Map: React.FC<MapProps> = ({ geojsonData }) => {
 
         // Add the marker cluster group to the map
         map.addLayer(markerClusterGroupRef.current);
+
+        // Add event listener for "Add to Favorites" button
+        map.on('popupopen', function(e) {
+          const addToFavoritesBtn = document.querySelector('.add-to-favorites');
+          if (addToFavoritesBtn) {
+            addToFavoritesBtn.addEventListener('click', function(event) {
+              const ico = (event.target as HTMLElement).getAttribute('data-ico');
+              if (ico) {
+                addToFavorites(ico);
+              }
+            });
+          }
+        });
       }
 
       const lat = searchParams.get('lat');
@@ -78,6 +92,17 @@ const Map: React.FC<MapProps> = ({ geojsonData }) => {
       }
     };
   }, [geojsonData, searchParams]);
+
+  const addToFavorites = (ico: string) => {
+    const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+    if (!favorites.includes(ico)) {
+      favorites.push(ico);
+      localStorage.setItem('favorites', JSON.stringify(favorites));
+      alert('Company added to favorites!');
+    } else {
+      alert('This company is already in your favorites.');
+    }
+  };
 
   return <div id="map" style={{ height: '100%', width: '100%' }} />;
 };
