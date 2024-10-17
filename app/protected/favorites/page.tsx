@@ -24,12 +24,12 @@ export default function FavoritesPage() {
           if (Array.isArray(parsedFavorites)) {
             setFavorites(parsedFavorites);
           } else {
-            setError('Stored favorites are not in the expected format');
+            setError('Hodnota není v předpokládaném formátu!');
           }
         }
       } catch (err) {
-        console.error('Error fetching favorites:', err);
-        setError('An error occurred while fetching favorites');
+        console.error('Chyba při načítání oblíbených položek:', err);
+        setError('Chyba při načítání oblíbených položek');
       }
     };
 
@@ -48,15 +48,15 @@ export default function FavoritesPage() {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Favorite Companies</h1>
+      <h1 className="text-2xl font-bold mb-4">Uložené Společnosti</h1>
       {favorites.length === 0 ? (
-        <p>No favorite companies added yet.</p>
+        <p>Nejsou přidány žádné společnosti do oblíbených</p>
       ) : (
         <ul>
           {favorites.map((company, index) => (
             <li key={index} className="mb-2 flex justify-between items-center">
               <span>
-                <strong>{company.properties?.nazev_spolecnosti || 'Unknown Company'}</strong>
+                <strong>{company.properties?.nazev_spolecnosti || 'Neznámá společnost'}</strong>
                 {' - '}
                 <span>IČO: {company.properties?.ico || 'N/A'}</span>
               </span>
@@ -64,14 +64,14 @@ export default function FavoritesPage() {
                 onClick={() => removeFavorite(company.properties?.ico)}
                 className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
               >
-                Remove
+                Odebrat
               </button>
             </li>
           ))}
         </ul>
       )}
       <Link href="/protected/Map" className="text-blue-500 hover:text-blue-700">
-        Back to Map
+        Zpět na mapu
       </Link>
     </div>
   );

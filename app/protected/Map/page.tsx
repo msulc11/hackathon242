@@ -67,11 +67,11 @@ export default function ProtectedPage() {
       localStorage.setItem('favorites', JSON.stringify(newFavorites));
       return newFavorites;
     });
-    alert('Company added to favorites!');
+    alert('Společnost přidána do oblíbených!');
   }, []);
 
   if (!geojson) {
-    return <div>Loading...</div>;
+    return <div>načítání...</div>;
   }
 
   return (
@@ -79,7 +79,7 @@ export default function ProtectedPage() {
       <div className="flex justify-between items-center mb-4">
         <SearchBar geojsonData={geojson} />
         <Link href="/protected/favorites" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-          View Favorites ({favorites.length})
+          Zobrazit oblíbené ({favorites.length})
         </Link>
       </div>
       <div style={{ height: '500px', width: '100%', minWidth: '1000px' }}>

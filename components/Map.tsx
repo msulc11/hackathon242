@@ -54,7 +54,7 @@ const Map: React.FC<MapProps> = ({ geojsonData, onAddFavorite }) => {
               Země původu: ${feature.properties.země_puvodu_zadatele}<br>
               IČO: ${feature.properties.ico}<br>
               <a href="${feature.properties.www}" target="_blank" rel="noopener noreferrer">Web</a><br>
-              <button class="add-to-favorites" data-ico="${feature.properties.ico}">Add to Favorites</button>
+              <button class="add-to-favorites" data-ico="${feature.properties.ico}">Přidat do oblíbených</button>
             `;
             layer.bindPopup(popupContent);
           }
