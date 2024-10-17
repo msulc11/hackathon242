@@ -8,10 +8,10 @@ import { redirect } from "next/navigation";
 import dynamic from 'next/dynamic';
 import SearchBar from '@/components/SearchBar';
 import Link from 'next/link';
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
-import { Pie } from 'react-chartjs-2';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement } from 'chart.js';
+import { Pie, Bar } from 'react-chartjs-2';
 
-ChartJS.register(ArcElement, Tooltip, Legend);
+ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement);
 
 interface GeoJSONFeature {
   type: string;
@@ -32,7 +32,7 @@ interface GeoJSON {
 
 const Map = dynamic(() => import('@/components/Map'), { 
   ssr: false,
-  loading: () => <p>Loading map...</p>
+  loading: () => <p>Načítání mapy...</p>
 });
 
 export default function ProtectedPage() {
@@ -45,13 +45,15 @@ export default function ProtectedPage() {
     return [];
   });
   const [companyStats, setCompanyStats] = useState({ sro: 0, as: 0, other: 0 });
+  const [countryStats, setCountryStats] = useState<{[key: string]: number}>({});
+  const [districtStats, setDistrictStats] = useState<{[key: string]: number}>({});
 
   useEffect(() => {
     const fetchGeoJSON = async () => {
       const response = await fetch('/api/companies');
       const data = await response.json();
       
-      // Deduplicate the features based on ICO
+      // Deduplikace funkcí na základě IČO
       const uniqueFeatures = data.reduce((acc, current) => {
         const x = acc.find(item => item.properties.ico === current.properties.ico);
         if (!x) {
@@ -63,8 +65,8 @@ export default function ProtectedPage() {
 
       setGeojson({ type: "FeatureCollection", features: uniqueFeatures });
 
-      // Calculate company type statistics
-      const stats = uniqueFeatures.reduce((acc, feature) => {
+      // Výpočet statistik typů společností
+      const typeStats = uniqueFeatures.reduce((acc, feature) => {
         const companyName = feature.properties.nazev_spolecnosti.toLowerCase();
         if (companyName.includes('s.r.o.') || companyName.includes('spol. s r.o.')) {
           acc.sro++;
@@ -76,7 +78,25 @@ export default function ProtectedPage() {
         return acc;
       }, { sro: 0, as: 0, other: 0 });
 
-      setCompanyStats(stats);
+      setCompanyStats(typeStats);
+
+      // Výpočet statistik zemí původu
+      const countryData = uniqueFeatures.reduce((acc, feature) => {
+        const country = feature.properties.země_puvodu_zadatele || 'Neznámé';
+        acc[country] = (acc[country] || 0) + 1;
+        return acc;
+      }, {});
+
+      setCountryStats(countryData);
+
+      // Výpočet statistik okresů
+      const districtData = uniqueFeatures.reduce((acc, feature) => {
+        const district = feature.properties.nazev_okresu || 'Neznámý';
+        acc[district] = (acc[district] || 0) + 1;
+        return acc;
+      }, {});
+
+      setDistrictStats(districtData);
     };
     fetchGeoJSON();
   }, []);
@@ -90,7 +110,7 @@ export default function ProtectedPage() {
     alert('Společnost přidána do oblíbených!');
   }, []);
 
-  const chartData = {
+  const companyTypeChartData = {
     labels: ['s.r.o.', 'a.s.', 'Ostatní'],
     datasets: [
       {
@@ -99,6 +119,52 @@ export default function ProtectedPage() {
         hoverBackgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
       },
     ],
+  };
+
+  const countryChartData = {
+    labels: Object.keys(countryStats),
+    datasets: [
+      {
+        label: 'Počet společností',
+        data: Object.values(countryStats),
+        backgroundColor: 'rgba(75, 192, 192, 0.6)',
+        borderColor: 'rgba(75, 192, 192, 1)',
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  const districtChartData = {
+    labels: Object.keys(districtStats),
+    datasets: [
+      {
+        label: 'Počet společností',
+        data: Object.values(districtStats),
+        backgroundColor: 'rgba(153, 102, 255, 0.6)',
+        borderColor: 'rgba(153, 102, 255, 1)',
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      y: {
+        beginAtZero: true,
+        title: {
+          display: true,
+          text: 'Počet společností'
+        }
+      },
+      x: {
+        title: {
+          display: true,
+          text: 'Název'
+        }
+      }
+    }
   };
 
   if (!geojson) {
@@ -120,7 +186,21 @@ export default function ProtectedPage() {
       <div className="mt-8 mb-8">
         <h2 className='text-2xl font-bold mb-4'>Statistika typů společností</h2>
         <div style={{ width: '300px', margin: 'auto' }}>
-          <Pie data={chartData} />
+          <Pie data={companyTypeChartData} />
+        </div>
+      </div>
+      
+      <div className="mt-8 mb-8">
+        <h2 className='text-2xl font-bold mb-4'>Statistika zemí původu</h2>
+        <div style={{ height: '400px', width: '100%' }}>
+          <Bar data={countryChartData} options={chartOptions} />
+        </div>
+      </div>
+      
+      <div className="mt-8 mb-8">
+        <h2 className='text-2xl font-bold mb-4'>Statistika okresů</h2>
+        <div style={{ height: '400px', width: '100%' }}>
+          <Bar data={districtChartData} options={chartOptions} />
         </div>
       </div>
       
@@ -131,7 +211,8 @@ export default function ProtectedPage() {
             <strong>{feature.properties.nazev_spolecnosti}</strong>
             {' - '}
             <span>IČO: {feature.properties.ico}</span> <br />
-            <span>Hodnota investice: {feature.properties.investice_mil__CZK} mil. Kč</span>
+            <span>Země původu: {feature.properties.země_puvodu_zadatele}</span> <br />
+            <span>Okres: {feature.properties.nazev_okresu}</span>
           </li>
         ))}
       </ul>
